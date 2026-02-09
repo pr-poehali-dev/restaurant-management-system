@@ -45,7 +45,10 @@ const inventoryData = [
     avgPrice: 711,
     turnover: 12,
     spoilage: 2.1,
-    suppliers: 3
+    suppliers: 3,
+    june: { sumIn: 11681.2, qtyIn: 16.4, percentIn: 7.4, sumOut: 4205.1, qtyOut: 5.2, percentOut: 20.1 },
+    july: { sumIn: 10596.9, qtyIn: 29.0, percentIn: -9.3, sumOut: 4889.2, qtyOut: 14.0, percentOut: 16.3 },
+    august: { sumIn: 46503.9, qtyIn: 49.2, percentIn: 18.5, sumOut: null, qtyOut: null, percentOut: null }
   },
   { 
     name: 'Овощи', 
@@ -60,7 +63,10 @@ const inventoryData = [
     avgPrice: 518,
     turnover: 8,
     spoilage: 8.5,
-    suppliers: 5
+    suppliers: 5,
+    june: { sumIn: 9589.4, qtyIn: 5.4, percentIn: -22.7, sumOut: 7393, qtyOut: 6.5, percentOut: 19.0 },
+    july: { sumIn: 5607.4, qtyIn: 1, percentIn: -41.5, sumOut: 8921, qtyOut: 10.6, percentOut: 20.7 },
+    august: { sumIn: 13110.6, qtyIn: 11.8, percentIn: 15.5, sumOut: null, qtyOut: null, percentOut: null }
   },
   { 
     name: 'Напитки', 
@@ -75,7 +81,10 @@ const inventoryData = [
     avgPrice: 151,
     turnover: 15,
     spoilage: 0.8,
-    suppliers: 4
+    suppliers: 4,
+    june: { sumIn: 4397.8, qtyIn: 26.9, percentIn: 18.2, sumOut: 6492.4, qtyOut: 25.7, percentOut: 15.3 },
+    july: { sumIn: 5186.6, qtyIn: 18.0, percentIn: 17.9, sumOut: 8989.6, qtyOut: 39.8, percentOut: 38.5 },
+    august: { sumIn: 12611.0, qtyIn: 120.9, percentIn: 19.1, sumOut: null, qtyOut: null, percentOut: null }
   },
   { 
     name: 'Морепродукты', 
@@ -90,7 +99,10 @@ const inventoryData = [
     avgPrice: 2270,
     turnover: 6,
     spoilage: 5.2,
-    suppliers: 2
+    suppliers: 2,
+    june: { sumIn: 2691.1, qtyIn: 3.1, percentIn: 66.9, sumOut: 1003, qtyOut: 1.6, percentOut: 25.8 },
+    july: { sumIn: 630.8, qtyIn: 0.1, percentIn: -76.6, sumOut: 1152, qtyOut: 1.8, percentOut: 14.9 },
+    august: { sumIn: 1411.1, qtyIn: 0.9, percentIn: -65.6, sumOut: null, qtyOut: null, percentOut: null }
   },
   { 
     name: 'Специи', 
@@ -105,7 +117,10 @@ const inventoryData = [
     avgPrice: 1889,
     turnover: 18,
     spoilage: 1.2,
-    suppliers: 6
+    suppliers: 6,
+    june: { sumIn: 1311, qtyIn: 3.5, percentIn: 6.7, sumOut: 11786.2, qtyOut: 20.4, percentOut: -81.1 },
+    july: { sumIn: 1284.3, qtyIn: 10.2, percentIn: -60.2, sumOut: 24561.4, qtyOut: 10.8, percentOut: -62.2 },
+    august: { sumIn: 12273.7, qtyIn: 26.1, percentIn: -61.2, sumOut: null, qtyOut: null, percentOut: null }
   },
 ];
 
@@ -747,6 +762,161 @@ const Index = () => {
                           <div className="flex items-center gap-2">
                             <Icon name="Wallet" size={16} className="text-green-500" />
                             <span className="text-green-500 font-semibold">Итоговая экономия: 287 000 ₽/мес</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Icon name="Table" className="text-primary" />
+                      Результаты инвентаризации по категориям и месяцам
+                    </CardTitle>
+                    <CardDescription>Поступления и отпуска товаров с отклонениями от плана</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-border">
+                            <th className="text-left p-3 font-semibold sticky left-0 bg-card z-10">№</th>
+                            <th className="text-left p-3 font-semibold sticky left-12 bg-card z-10 min-w-[200px]">
+                              Наименование товара
+                            </th>
+                            <th className="text-center p-3 font-semibold">Ед.</th>
+                            <th colSpan={3} className="text-center p-3 font-semibold border-l border-border bg-purple-500/10">
+                              Июнь 2025
+                            </th>
+                            <th colSpan={3} className="text-center p-3 font-semibold border-l border-border bg-blue-500/10">
+                              Июль 2025
+                            </th>
+                            <th colSpan={3} className="text-center p-3 font-semibold border-l border-border bg-green-500/10">
+                              Август 2025
+                            </th>
+                            <th className="text-center p-3 font-semibold border-l border-border">Итого</th>
+                          </tr>
+                          <tr className="border-b border-border text-xs text-muted-foreground">
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th className="p-2 border-l border-border">Сумма</th>
+                            <th className="p-2">Кол-во</th>
+                            <th className="p-2">% откл.</th>
+                            <th className="p-2 border-l border-border">Сумма</th>
+                            <th className="p-2">Кол-во</th>
+                            <th className="p-2">% откл.</th>
+                            <th className="p-2 border-l border-border">Сумма</th>
+                            <th className="p-2">Кол-во</th>
+                            <th className="p-2">% откл.</th>
+                            <th className="p-2 border-l border-border">Сумма</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {inventoryData.map((item, idx) => {
+                            const getColorClass = (percent: number | null) => {
+                              if (percent === null) return '';
+                              if (percent < -50) return 'bg-red-500/20 text-red-400';
+                              if (percent < -20) return 'bg-orange-500/20 text-orange-400';
+                              if (percent < -5) return 'bg-yellow-500/20 text-yellow-400';
+                              if (percent > 50) return 'bg-red-500/20 text-red-400';
+                              if (percent > 20) return 'bg-green-500/20 text-green-400';
+                              return '';
+                            };
+
+                            const totalSum = (item.june.sumIn + item.july.sumIn + item.august.sumIn).toFixed(1);
+
+                            return (
+                              <tr key={idx} className="border-b border-border/50 hover:bg-accent/30 transition-colors">
+                                <td className="p-3 sticky left-0 bg-card">{idx + 1}</td>
+                                <td className="p-3 font-medium sticky left-12 bg-card">{item.name}</td>
+                                <td className="p-3 text-center text-muted-foreground">{item.unit}</td>
+                                
+                                <td className="p-3 text-right border-l border-border">{item.june.sumIn.toLocaleString('ru-RU')}</td>
+                                <td className="p-3 text-right">{item.june.qtyIn}</td>
+                                <td className={`p-3 text-right font-semibold ${getColorClass(item.june.percentIn)}`}>
+                                  {item.june.percentIn > 0 ? '+' : ''}{item.june.percentIn}%
+                                </td>
+                                
+                                <td className="p-3 text-right border-l border-border">{item.july.sumIn.toLocaleString('ru-RU')}</td>
+                                <td className="p-3 text-right">{item.july.qtyIn}</td>
+                                <td className={`p-3 text-right font-semibold ${getColorClass(item.july.percentIn)}`}>
+                                  {item.july.percentIn > 0 ? '+' : ''}{item.july.percentIn}%
+                                </td>
+                                
+                                <td className="p-3 text-right border-l border-border">{item.august.sumIn.toLocaleString('ru-RU')}</td>
+                                <td className="p-3 text-right">{item.august.qtyIn}</td>
+                                <td className={`p-3 text-right font-semibold ${getColorClass(item.august.percentIn)}`}>
+                                  {item.august.percentIn > 0 ? '+' : ''}{item.august.percentIn}%
+                                </td>
+                                
+                                <td className="p-3 text-right border-l border-border font-bold">{totalSum}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="p-4 rounded-lg border border-border bg-card/50">
+                        <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                          <div className="w-3 h-3 rounded bg-red-500"></div>
+                          Критические отклонения
+                        </h4>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Отклонение более 50% от плана требует срочного внимания
+                        </p>
+                        <div className="space-y-1 text-xs">
+                          <div className="flex justify-between">
+                            <span>Специи (июль):</span>
+                            <span className="text-red-400 font-semibold">-81.1%</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Морепродукты (июль):</span>
+                            <span className="text-red-400 font-semibold">-76.6%</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-4 rounded-lg border border-border bg-card/50">
+                        <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                          <div className="w-3 h-3 rounded bg-orange-500"></div>
+                          Требуют внимания
+                        </h4>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Отклонение 20-50% требует корректировки закупок
+                        </p>
+                        <div className="space-y-1 text-xs">
+                          <div className="flex justify-between">
+                            <span>Овощи (июнь):</span>
+                            <span className="text-orange-400 font-semibold">-22.7%</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Овощи (июль):</span>
+                            <span className="text-orange-400 font-semibold">-41.5%</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-4 rounded-lg border border-border bg-card/50">
+                        <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                          <div className="w-3 h-3 rounded bg-green-500"></div>
+                          Положительная динамика
+                        </h4>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Превышение плана говорит о росте потребления
+                        </p>
+                        <div className="space-y-1 text-xs">
+                          <div className="flex justify-between">
+                            <span>Мясо (август):</span>
+                            <span className="text-green-400 font-semibold">+18.5%</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Напитки (июль):</span>
+                            <span className="text-green-400 font-semibold">+38.5%</span>
                           </div>
                         </div>
                       </div>
