@@ -32,11 +32,88 @@ const revenueData = [
 ];
 
 const inventoryData = [
-  { name: 'Мясо', value: 320000, status: 'normal' },
-  { name: 'Овощи', value: 145000, status: 'low' },
-  { name: 'Напитки', value: 280000, status: 'normal' },
-  { name: 'Морепродукты', value: 420000, status: 'high' },
-  { name: 'Специи', value: 85000, status: 'critical' },
+  { 
+    name: 'Мясо', 
+    value: 320000, 
+    status: 'normal',
+    quantity: 450,
+    unit: 'кг',
+    optimal: 420,
+    lastMonth: 380,
+    deltaRub: -18000,
+    deltaQty: 70,
+    avgPrice: 711,
+    turnover: 12,
+    spoilage: 2.1,
+    suppliers: 3
+  },
+  { 
+    name: 'Овощи', 
+    value: 145000, 
+    status: 'low',
+    quantity: 280,
+    unit: 'кг',
+    optimal: 450,
+    lastMonth: 520,
+    deltaRub: -95000,
+    deltaQty: -240,
+    avgPrice: 518,
+    turnover: 8,
+    spoilage: 8.5,
+    suppliers: 5
+  },
+  { 
+    name: 'Напитки', 
+    value: 280000, 
+    status: 'normal',
+    quantity: 1850,
+    unit: 'л',
+    optimal: 1800,
+    lastMonth: 1750,
+    deltaRub: 22000,
+    deltaQty: 100,
+    avgPrice: 151,
+    turnover: 15,
+    spoilage: 0.8,
+    suppliers: 4
+  },
+  { 
+    name: 'Морепродукты', 
+    value: 420000, 
+    status: 'high',
+    quantity: 185,
+    unit: 'кг',
+    optimal: 120,
+    lastMonth: 95,
+    deltaRub: 142000,
+    deltaQty: 90,
+    avgPrice: 2270,
+    turnover: 6,
+    spoilage: 5.2,
+    suppliers: 2
+  },
+  { 
+    name: 'Специи', 
+    value: 85000, 
+    status: 'critical',
+    quantity: 45,
+    unit: 'кг',
+    optimal: 180,
+    lastMonth: 165,
+    deltaRub: -226800,
+    deltaQty: -120,
+    avgPrice: 1889,
+    turnover: 18,
+    spoilage: 1.2,
+    suppliers: 6
+  },
+];
+
+const inventoryTrends = [
+  { week: 'Нед 1', meat: 380, veg: 520, drinks: 1650, sea: 95, spices: 165 },
+  { week: 'Нед 2', meat: 410, veg: 480, drinks: 1700, sea: 110, spices: 142 },
+  { week: 'Нед 3', meat: 435, veg: 350, drinks: 1780, sea: 145, spices: 98 },
+  { week: 'Нед 4', meat: 450, veg: 280, drinks: 1850, sea: 185, spices: 45 },
 ];
 
 const topProducts = [
@@ -358,32 +435,320 @@ const Index = () => {
                   </Card>
                 </div>
 
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+                    <CardHeader>
+                      <CardTitle>Динамика запасов за месяц</CardTitle>
+                      <CardDescription>Изменение количества по категориям</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <LineChart data={inventoryTrends}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                          <XAxis dataKey="week" stroke="#9CA3AF" />
+                          <YAxis stroke="#9CA3AF" />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: '#1F2937',
+                              border: '1px solid #374151',
+                              borderRadius: '8px',
+                            }}
+                          />
+                          <Line type="monotone" dataKey="meat" stroke="#8B5CF6" strokeWidth={2} name="Мясо" />
+                          <Line type="monotone" dataKey="veg" stroke="#10B981" strokeWidth={2} name="Овощи" />
+                          <Line type="monotone" dataKey="drinks" stroke="#0EA5E9" strokeWidth={2} name="Напитки" />
+                          <Line type="monotone" dataKey="sea" stroke="#F97316" strokeWidth={2} name="Морепродукты" />
+                          <Line type="monotone" dataKey="spices" stroke="#EF4444" strokeWidth={2} name="Специи" />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+                    <CardHeader>
+                      <CardTitle>Оборачиваемость и порча</CardTitle>
+                      <CardDescription>Дней оборота и % потерь</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={inventoryData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                          <XAxis dataKey="name" stroke="#9CA3AF" />
+                          <YAxis yAxisId="left" stroke="#9CA3AF" />
+                          <YAxis yAxisId="right" orientation="right" stroke="#EF4444" />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: '#1F2937',
+                              border: '1px solid #374151',
+                              borderRadius: '8px',
+                            }}
+                          />
+                          <Bar yAxisId="left" dataKey="turnover" fill="#0EA5E9" radius={[8, 8, 0, 0]} name="Дней оборота" />
+                          <Bar yAxisId="right" dataKey="spoilage" fill="#EF4444" radius={[8, 8, 0, 0]} name="Порча %" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                </div>
+
                 <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Icon name="AlertCircle" className="text-primary" />
-                      Рекомендации по инвентаризации
+                      <Icon name="FileSpreadsheet" className="text-primary" />
+                      Детальный анализ позиций
+                    </CardTitle>
+                    <CardDescription>Полная информация по каждой категории товаров</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-6">
+                      {inventoryData.map((item, idx) => {
+                        const optimalDiff = item.quantity - item.optimal;
+                        const optimalPercent = ((optimalDiff / item.optimal) * 100).toFixed(1);
+                        const isOverstock = optimalDiff > 0;
+                        const isUnderstock = optimalDiff < 0;
+                        
+                        return (
+                          <div key={idx} className="p-6 rounded-xl border border-border bg-accent/20">
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="flex items-center gap-3">
+                                <div className={`w-3 h-3 rounded-full ${
+                                  item.status === 'critical' ? 'bg-destructive animate-pulse' :
+                                  item.status === 'low' ? 'bg-yellow-500' :
+                                  item.status === 'high' ? 'bg-orange-500' :
+                                  'bg-green-500'
+                                }`} />
+                                <h3 className="text-xl font-bold">{item.name}</h3>
+                              </div>
+                              <Badge
+                                variant={
+                                  item.status === 'critical' ? 'destructive' :
+                                  item.status === 'low' ? 'outline' :
+                                  item.status === 'high' ? 'secondary' :
+                                  'default'
+                                }
+                                className="text-sm"
+                              >
+                                {item.status === 'critical' && '⚠️ Критический дефицит'}
+                                {item.status === 'low' && '⬇️ Низкий запас'}
+                                {item.status === 'normal' && '✓ В норме'}
+                                {item.status === 'high' && '⬆️ Избыток'}
+                              </Badge>
+                            </div>
+
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                              <div className="space-y-1">
+                                <p className="text-xs text-muted-foreground">Текущий запас</p>
+                                <p className="text-2xl font-bold text-primary">
+                                  {item.quantity} <span className="text-base text-muted-foreground">{item.unit}</span>
+                                </p>
+                              </div>
+                              <div className="space-y-1">
+                                <p className="text-xs text-muted-foreground">Оптимальный</p>
+                                <p className="text-2xl font-bold">
+                                  {item.optimal} <span className="text-base text-muted-foreground">{item.unit}</span>
+                                </p>
+                              </div>
+                              <div className="space-y-1">
+                                <p className="text-xs text-muted-foreground">Стоимость</p>
+                                <p className="text-2xl font-bold text-secondary">
+                                  {(item.value / 1000).toFixed(0)}K ₽
+                                </p>
+                              </div>
+                              <div className="space-y-1">
+                                <p className="text-xs text-muted-foreground">Ср. цена</p>
+                                <p className="text-2xl font-bold">
+                                  {item.avgPrice} <span className="text-base text-muted-foreground">₽/{item.unit}</span>
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                              <div className="p-3 rounded-lg bg-card/50">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm text-muted-foreground">Отклонение от оптимума</span>
+                                  {isOverstock && <Icon name="ArrowUp" className="text-orange-500" size={18} />}
+                                  {isUnderstock && <Icon name="ArrowDown" className="text-yellow-500" size={18} />}
+                                  {!isOverstock && !isUnderstock && <Icon name="Check" className="text-green-500" size={18} />}
+                                </div>
+                                <p className={`text-lg font-bold ${
+                                  isOverstock ? 'text-orange-500' : 
+                                  isUnderstock ? 'text-yellow-500' : 
+                                  'text-green-500'
+                                }`}>
+                                  {optimalDiff > 0 ? '+' : ''}{optimalDiff} {item.unit} ({optimalPercent > 0 ? '+' : ''}{optimalPercent}%)
+                                </p>
+                              </div>
+
+                              <div className="p-3 rounded-lg bg-card/50">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm text-muted-foreground">Дельта к прошлому месяцу</span>
+                                  {item.deltaQty > 0 ? 
+                                    <Icon name="TrendingUp" className="text-green-500" size={18} /> : 
+                                    <Icon name="TrendingDown" className="text-destructive" size={18} />
+                                  }
+                                </div>
+                                <p className={`text-lg font-bold ${item.deltaQty > 0 ? 'text-green-500' : 'text-destructive'}`}>
+                                  {item.deltaQty > 0 ? '+' : ''}{item.deltaQty} {item.unit}
+                                </p>
+                                <p className={`text-sm ${item.deltaRub > 0 ? 'text-green-500' : 'text-destructive'}`}>
+                                  {item.deltaRub > 0 ? '+' : ''}{item.deltaRub.toLocaleString('ru-RU')} ₽
+                                </p>
+                              </div>
+
+                              <div className="p-3 rounded-lg bg-card/50">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-sm text-muted-foreground">Оборачиваемость</span>
+                                  <Icon name="RotateCw" className="text-primary" size={18} />
+                                </div>
+                                <p className="text-lg font-bold">{item.turnover} дней</p>
+                                <p className="text-sm text-muted-foreground">Поставщиков: {item.suppliers}</p>
+                              </div>
+                            </div>
+
+                            <div className="flex flex-wrap gap-3">
+                              {item.spoilage > 5 && (
+                                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-destructive/10 border border-destructive/30">
+                                  <Icon name="AlertTriangle" className="text-destructive" size={16} />
+                                  <span className="text-sm font-medium">Высокая порча: {item.spoilage}%</span>
+                                </div>
+                              )}
+                              {item.turnover > 14 && (
+                                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-500/10 border border-green-500/30">
+                                  <Icon name="Zap" className="text-green-500" size={16} />
+                                  <span className="text-sm font-medium">Быстрая оборачиваемость</span>
+                                </div>
+                              )}
+                              {isOverstock && (
+                                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-orange-500/10 border border-orange-500/30">
+                                  <Icon name="Package" className="text-orange-500" size={16} />
+                                  <span className="text-sm font-medium">Затоваривание: риск порчи</span>
+                                </div>
+                              )}
+                              {isUnderstock && Math.abs(optimalDiff) > item.optimal * 0.3 && (
+                                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
+                                  <Icon name="ShoppingCart" className="text-yellow-500" size={16} />
+                                  <span className="text-sm font-medium">Срочная закупка требуется</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-border/50 bg-gradient-card backdrop-blur-sm">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Icon name="Target" className="text-primary" />
+                      Рекомендации и план действий
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="p-4 rounded-lg border border-destructive/50 bg-destructive/10">
-                        <Icon name="TrendingDown" className="text-destructive mb-2" size={24} />
-                        <h4 className="font-semibold mb-1">Критический уровень</h4>
-                        <p className="text-sm text-muted-foreground mb-2">Специи: срочно заказать 45 кг</p>
-                        <p className="text-xs text-muted-foreground">Экономия: 28 000 ₽</p>
+                        <div className="flex items-start gap-3 mb-3">
+                          <Icon name="AlertCircle" className="text-destructive mt-1" size={24} />
+                          <div className="flex-1">
+                            <h4 className="font-semibold mb-1 text-lg">Критическая ситуация: Специи</h4>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              Запас на грани истощения — осталось 45 кг при норме 180 кг
+                            </p>
+                          </div>
+                        </div>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center gap-2">
+                            <Icon name="ShoppingBag" size={16} className="text-destructive" />
+                            <span>Срочный заказ: 135 кг (+300%)</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Icon name="DollarSign" size={16} className="text-destructive" />
+                            <span>Затраты на закупку: ~255 000 ₽</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Icon name="TrendingUp" size={16} className="text-green-500" />
+                            <span className="text-green-500">Избежать дефицита: экономия 420 000 ₽</span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="p-4 rounded-lg border border-primary/50 bg-primary/10">
-                        <Icon name="Package" className="text-primary mb-2" size={24} />
-                        <h4 className="font-semibold mb-1">Оптимизация</h4>
-                        <p className="text-sm text-muted-foreground mb-2">Морепродукты: избыток 35%</p>
-                        <p className="text-xs text-muted-foreground">Потенциальные потери: 85 000 ₽</p>
+
+                      <div className="p-4 rounded-lg border border-orange-500/50 bg-orange-500/10">
+                        <div className="flex items-start gap-3 mb-3">
+                          <Icon name="Package" className="text-orange-500 mt-1" size={24} />
+                          <div className="flex-1">
+                            <h4 className="font-semibold mb-1 text-lg">Избыток: Морепродукты</h4>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              Затоваривание 54% — риск порчи скоропортящихся продуктов
+                            </p>
+                          </div>
+                        </div>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center gap-2">
+                            <Icon name="TrendingDown" size={16} className="text-orange-500" />
+                            <span>Снизить закупки на 35% в следующем цикле</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Icon name="Sparkles" size={16} className="text-orange-500" />
+                            <span>Запустить акцию на блюда с морепродуктами</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Icon name="Save" size={16} className="text-green-500" />
+                            <span className="text-green-500">Предотвратить потери: 118 000 ₽</span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="p-4 rounded-lg border border-secondary/50 bg-secondary/10">
-                        <Icon name="TrendingUp" className="text-secondary mb-2" size={24} />
-                        <h4 className="font-semibold mb-1">Увеличить закупку</h4>
-                        <p className="text-sm text-muted-foreground mb-2">Овощи: высокий спрос</p>
-                        <p className="text-xs text-muted-foreground">Доп. прибыль: 120 000 ₽</p>
+
+                      <div className="p-4 rounded-lg border border-yellow-500/50 bg-yellow-500/10">
+                        <div className="flex items-start gap-3 mb-3">
+                          <Icon name="TrendingUp" className="text-yellow-500 mt-1" size={24} />
+                          <div className="flex-1">
+                            <h4 className="font-semibold mb-1 text-lg">Низкий уровень: Овощи</h4>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              Запас ниже оптимума на 38% — высокий спрос не покрывается
+                            </p>
+                          </div>
+                        </div>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center gap-2">
+                            <Icon name="ArrowUp" size={16} className="text-yellow-500" />
+                            <span>Увеличить закупку на 170 кг до оптимума</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Icon name="DollarSign" size={16} className="text-yellow-500" />
+                            <span>Инвестиция: ~88 000 ₽</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Icon name="TrendingUp" size={16} className="text-green-500" />
+                            <span className="text-green-500">Доп. прибыль от продаж: 156 000 ₽</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-4 rounded-lg border border-blue-500/50 bg-blue-500/10">
+                        <div className="flex items-start gap-3 mb-3">
+                          <Icon name="BarChart3" className="text-blue-500 mt-1" size={24} />
+                          <div className="flex-1">
+                            <h4 className="font-semibold mb-1 text-lg">Оптимизация: Общий склад</h4>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              Потенциал экономии за счет балансировки запасов
+                            </p>
+                          </div>
+                        </div>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center gap-2">
+                            <Icon name="Percent" size={16} className="text-blue-500" />
+                            <span>Снизить общую порчу с 3.6% до 2.1%</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Icon name="RotateCw" size={16} className="text-blue-500" />
+                            <span>Улучшить оборачиваемость на 18%</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Icon name="Wallet" size={16} className="text-green-500" />
+                            <span className="text-green-500 font-semibold">Итоговая экономия: 287 000 ₽/мес</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
